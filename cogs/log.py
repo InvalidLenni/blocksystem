@@ -2,27 +2,16 @@ import sqlite3
 
 import discord
 from discord.ext import commands
-from discord_slash import cog_ext
-from discord_slash.utils.manage_commands import create_option
 
 
-class Block(commands.Cog):
+class Log(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-
-    @cog_ext.cog_slash(
-        name="setlog",
-        description="Set the log for the new blocksystem bans. (Required: ID in the whitelist database)",
-        options=[
-            create_option(
-                name="channel",
-                description="Please enter the channel for the blocksystem ban log.",
-                option_type=6,
-                required=True
-            )
-        ])
+    @commands.slash_command(name="setlog", description="Set the log of the banlog.", options=[
+        discord.Option("channel", description="The channel", required=True, type=discord.TextChannel),
+    ])
     @commands.is_owner()
-    async def setlog(self, ctx, channel: discord.TextChannel):
+    async def _setlog(self, ctx, channel: discord.TextChannel):
         if ctx.author.bot:
             return
         db = sqlite3.connect('main.sqlite')
