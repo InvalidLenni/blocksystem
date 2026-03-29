@@ -1,26 +1,17 @@
 import discord
 from discord.ext import commands
-from discord_slash import cog_ext
-from discord_slash.utils.manage_commands import create_option
 
 
 class Unblock(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @cog_ext.cog_slash(
-        name="unblock",
-        description="Unblock a blocksystem banned user. (Only owner actually)",
-        options=[
-            create_option(
-                name="userid",
-                description="Please enter the userid.",
-                option_type=3,
-                required=True
-            )
+    @commands.slash_command(name="unban", description="Unban a user", options=[
+        discord.Option("userid", description="The ID of the user you want to unban", required=True, type=int),
+        discord.Option("reason", description="The reason for the ban", required=True, type=str)
     ])
     @commands.is_owner()
-    async def unblock(self, ctx, userid):
+    async def _unban(self, ctx, userid):
         if ctx.author.bot:
             return
         user = await self.bot.fetch_user(userid)
