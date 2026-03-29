@@ -2,31 +2,16 @@ import sqlite3
 
 import discord
 from discord.ext import commands
-from discord_slash import cog_ext
-from discord_slash.utils.manage_commands import create_option
 
 
 class Block(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @cog_ext.cog_slash(
-        name="block",
-        description="Block a member. (Only owner actually)",
-        options=[
-            create_option(
-                name="userid",
-                description="Please enter the userid.",
-                option_type=3,
-                required=True
-            ),
-            create_option(
-                name="reason",
-                description="Please enter the reason for the blocksystem ban.",
-                option_type=3,
-                required=True
-            )
-        ])
+    @commands.slash_command(name="block", description="Ban a user", options=[
+        discord.Option("userid", description="The ID of the user you want to ban", required=True, type=int),
+        discord.Option("reason", description="The reason for the ban", required=True, type=str)
+    ])
     @commands.is_owner()
     async def block(self, ctx, userid, reason):
         if ctx.author.bot:
