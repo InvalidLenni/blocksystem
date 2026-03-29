@@ -2,27 +2,17 @@ import sqlite3
 
 import discord
 from discord.ext import commands
-from discord_slash import cog_ext
-from discord_slash.utils.manage_commands import create_option
 
 
-class Block(commands.Cog):
+class Log(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-
-    @cog_ext.cog_slash(
-        name="setlog",
-        description="Set the log for the new blocksystem bans. (Required: ID in the whitelist database)",
-        options=[
-            create_option(
-                name="channel",
-                description="Please enter the channel for the blocksystem ban log.",
-                option_type=6,
-                required=True
-            )
-        ])
+        
+    @commands.slash_command(name="setlog", description="Set the log of the banlog.", options=[
+        discord.Option("channel", description="The channel", required=True, type=discord.TextChannel),
+    ])
     @commands.is_owner()
-    async def setlog(self, ctx, channel: discord.TextChannel):
+    async def _setlog(self, ctx, channel: discord.TextChannel):
         if ctx.author.bot:
             return
         db = sqlite3.connect('main.sqlite')
@@ -43,21 +33,13 @@ class Block(commands.Cog):
             embed = discord.Embed(title="already set",
                                   description="The logchannel is already set, you can remove the logchannel with ``/removelog``.",
                                   color=discord.Color.red())
-            await ctx.send(embed=embed, hidden=True)
+            await ctx.send(embed=embed)
         cursor.close()
         db.close()
 
-    @cog_ext.cog_slash(
-        name="removelog",
-        description="Remove the log for the new blocksystem bans. (Required: ID in the whitelist database)",
-        options=[
-            create_option(
-                name="channel",
-                description="Please enter the channel for the blocksystem ban log.",
-                option_type=6,
-                required=True
-            )
-        ])
+    @commands.slash_command(name="removelog", description="Remove the log of the banlog.", options=[
+        discord.Option("channel", description="The channel", required=True, type=discord.TextChannel),
+    ])
     @commands.is_owner()
     async def removelog(self, ctx, channel: discord.TextChannel):
         if ctx.author.bot:
@@ -77,7 +59,7 @@ class Block(commands.Cog):
             embed = discord.Embed(title="logchannel removed",
                                   description="The logchannel is now removed, you can add the logchannel with ``/setlog`` again.",
                                   color=discord.Color.red())
-            await ctx.send(embed=embed, hidden=True)
+            await ctx.send(embed=embed)
             cursor.execute(sql)
             db.commit()
         cursor.close()

@@ -4,15 +4,13 @@ import sys
 
 import discord
 from discord.ext import commands
-from discord_slash import SlashCommand
 
-bot = commands.Bot(command_prefix="b!", owner_ids=[814233207515643974, 421991668556759042])
-slash = SlashCommand(bot, sync_commands=True)
+bot = commands.Bot(command_prefix="b!")
 bot.remove_command('help')
 
 @bot.event
 async def on_():
-    print("Ich bin nun online!")
+    print("Online")
 
 
 
@@ -28,4 +26,4 @@ if __name__ == '__main__':
         except Exception as e:
             print(f'Ich konnte nicht {extension} laden!', file=sys.stderr)
 
-bot.run("")
+bot.run("YOUR BOT TOKEN")
